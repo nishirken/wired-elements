@@ -16,7 +16,11 @@
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
             nodejs-16_x
+            simple-http-server
           ];
+          shellHook = ''
+          ln -s ${pkgs.chromium} ./chromium
+        '';
         };
       });
 }

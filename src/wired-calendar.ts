@@ -2,6 +2,15 @@ import { rectangle, line, ellipse } from './wired-lib';
 import { randomSeed, fireEvent } from './wired-base';
 import { css, TemplateResult, html, LitElement, PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { parse } from 'date-fns';
+
+const testIds = {
+  root: 'root',
+  day: (cell: CalendarCell) => `day-${cell.value}`,
+  headerText: 'header-text',
+  headerArrowLeft: 'arrow-left',
+  headerArrowRight: 'arrow-right',
+};
 
 interface AreaSize {
   width: number;
@@ -9,6 +18,7 @@ interface AreaSize {
 }
 
 interface CalendarCell {
+  date: Date;
   value: string;
   text: string;
   selected: boolean;
@@ -54,7 +64,6 @@ export class WiredCalendar extends LitElement {
   private tblRowHeight: number = 0;
   private tblHeadHeight: number = 0;
 
-  private monthYear: string = '';
   private weeks: CalendarCell[][] = [[]];
 
   private seed = randomSeed();
@@ -195,12 +204,14 @@ export class WiredCalendar extends LitElement {
     return html`
     <table style="width:${this.calendarRefSize.width}px;height:${this.calendarRefSize.height}px;border:${TABLE_PADDING}px solid transparent"
             @mousedown="${this.onItemClick}"
-            @touchstart="${this.onItemClick}">
+            @touchstart="${this.onItemClick}"
+            data-test-id="${testIds.root}"
+            >
       ${ /* 1st header row with calendar title and prev/next controls */ ''}
       <tr class="top-header" style="height:${this.tblHeadHeight}px;">
-        <th id="prevCal" class="pointer" @click="${this.onPrevClick}">&lt;&lt;</th>
-        <th colSpan="5">${this.monthYear}</th>
-        <th id="nextCal" class="pointer" @click="${this.onNextClick}">&gt;&gt;</th>
+        <th id="prevCal" class="pointer" @click="${this.onPrevClick}" data-test-id=${testIds.headerArrowLeft}>&lt;&lt;</th>
+        <th colSpan="5" data-test-id="${testIds.headerText}">${this.monthYear}</th>
+        <th id="nextCal" class="pointer" @click="${this.onNextClick}" data-test-id=${testIds.headerArrowRight}>&gt;&gt;</th>
       </tr>
       ${ /* 2nd header row with the seven weekdays names (short or initials) */ ''}
       <tr class="header" style="height:${this.tblHeadHeight}px;">
@@ -224,7 +235,7 @@ export class WiredCalendar extends LitElement {
                 html`${d.selected ?
                   // Render "selected" cell
                   html`
-                            <td class="selected" value="${d.value}">
+                            <td class="selected" value="${d.value}" data-test-id="${testIds.day(d)}">
                             <div style="width: ${this.tblColWidth}px; line-height:${this.tblRowHeight}px;">${d.text}</div>
                             <div class="overlay">
                               <svg id="svgTD" class="selected"></svg>
@@ -259,6 +270,19 @@ export class WiredCalendar extends LitElement {
     if (changed && changed instanceof Map) {
       if (changed.has('disabled')) this.refreshDisabledState();
       if (changed.has('selected')) this.refreshSelection();
+
+      if (changed.has('format')) {
+        for (const week of this.weeks) {
+          for (const day of week) {
+            day.value = this.format(day.date);
+            this.requestUpdate();
+          }
+        }
+      }
+
+      if (changed.has('selected') && this.selected) {
+        this.setSelectedDate(this.format(parse(this.selected, 'MMMM dd, yyyy', new Date())), false);
+      }
     }
 
     // Redraw calendar sketchy bounding box
@@ -295,7 +319,7 @@ export class WiredCalendar extends LitElement {
     this.classList.add('wired-rendered');
   }
 
-  setSelectedDate(formatedDate: string): void {
+  setSelectedDate(formatedDate: string, fire = true): void {
     // TODO: Validate `formatedDate`
     this.selected = formatedDate;
     if (this.selected) {
@@ -303,7 +327,9 @@ export class WiredCalendar extends LitElement {
       this.firstOfMonthDate = new Date(d.getFullYear(), d.getMonth(), 1);
       this.computeCalendar();
       this.requestUpdate();
-      this.fireSelected();
+      if (fire) {
+        this.fireSelected();
+      }
     }
   }
 
@@ -438,10 +464,12 @@ export class WiredCalendar extends LitElement {
     }
   }
 
-  private computeCalendar(): void {
-    // Compute month and year for table header
-    this.monthYear = this.months[this.firstOfMonthDate.getMonth()] + ' ' + this.firstOfMonthDate.getFullYear();
+  // Compute month and year for table header
+  private get monthYear() {
+    return this.months[this.firstOfMonthDate.getMonth()] + ' ' + this.firstOfMonthDate.getFullYear();
+  }
 
+  private computeCalendar(): void {
     // Compute all month dates (one per day, 7 days per week, all weeks of the month)
     const first_day_in_month = new Date(this.firstOfMonthDate.getFullYear(), this.firstOfMonthDate.getMonth(), 1);
     // Initialize offset (negative because calendar commonly starts few days before the first of the month)
@@ -457,6 +485,7 @@ export class WiredCalendar extends LitElement {
         const formatedDate: string = this.format(day);
 
         this.weeks[weekIndex][dayOfWeekIndex] = {
+          date: day,
           value: formatedDate,
           text: day.getDate().toString(),
           selected: formatedDate === this.selected,
@@ -511,8 +540,7 @@ export class WiredCalendar extends LitElement {
 
   private debounce(func: Function, wait: number, immediate: boolean, context: HTMLElement): EventListenerOrEventListenerObject {
     let timeout = 0;
-    return () => {
-      const args = arguments;
+    return (...args: any[]) => {
       const later = () => {
         timeout = 0;
         if (!immediate) {
