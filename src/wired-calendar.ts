@@ -2,7 +2,6 @@ import { rectangle, line, ellipse } from './wired-lib';
 import { randomSeed, fireEvent } from './wired-base';
 import { css, TemplateResult, html, LitElement, PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { parse } from 'date-fns';
 
 const testIds = {
   root: 'root',
@@ -235,7 +234,7 @@ export class WiredCalendar extends LitElement {
                 html`${d.selected ?
                   // Render "selected" cell
                   html`
-                            <td class="selected" value="${d.value}" data-test-id="${testIds.day(d)}">
+                            <td class="selected" value="${d.value}" data-test-id="${testIds.day(d)}" data-selected="true">
                             <div style="width: ${this.tblColWidth}px; line-height:${this.tblRowHeight}px;">${d.text}</div>
                             <div class="overlay">
                               <svg id="svgTD" class="selected"></svg>
@@ -243,7 +242,7 @@ export class WiredCalendar extends LitElement {
                         ` :
                   // Render "not selected" cell
                   html`
-                            <td .className="${d.disabled ? 'disabled' : (d.dimmed ? 'dimmed' : '')}"
+                            <td .className="${d.disabled ? 'disabled' : (d.dimmed ? 'dimmed' : '')}" data-test-id="${testIds.day(d)}" 
                                 value="${d.disabled ? '' : d.value}">${d.text}</td>
                         `}
                     `
@@ -269,7 +268,7 @@ export class WiredCalendar extends LitElement {
   updated(changed?: PropertyValues) {
     if (changed && changed instanceof Map) {
       if (changed.has('disabled')) this.refreshDisabledState();
-      if (changed.has('selected')) this.refreshSelection();
+      if (changed.has('value')) this.refreshSelection();
 
       if (changed.has('format')) {
         for (const week of this.weeks) {
@@ -280,8 +279,8 @@ export class WiredCalendar extends LitElement {
         }
       }
 
-      if (changed.has('selected') && this.selected) {
-        this.setSelectedDate(this.format(parse(this.selected, 'MMMM dd, yyyy', new Date())), false);
+      if (changed.has('value') && this.value) {
+        this.setSelectedDate(this.value.text, false);
       }
     }
 
