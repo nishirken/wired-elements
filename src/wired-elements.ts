@@ -1,4 +1,5 @@
 export * from './wired-button';
+export * from './wired-calendar';
 export * from './wired-card';
 export * from './wired-checkbox';
 export * from './wired-combo';

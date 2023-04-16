@@ -3,7 +3,7 @@ import { rectangle } from './wired-lib';
 import { css, TemplateResult, html, CSSResultArray } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import './wired-item.js';
+import './wired-item';
 
 @customElement('wired-tab')
 export class WiredTab extends WiredBase {

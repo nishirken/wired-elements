@@ -1,7 +1,7 @@
-import { rectangle, line, ellipse } from './wired-lib';
+import { customElement, rectangle, line, ellipse } from './wired-lib';
 import { randomSeed, fireEvent } from './wired-base';
 import { css, TemplateResult, html, LitElement, PropertyValues } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 
 const testIds = {
   root: 'root',
@@ -280,7 +280,7 @@ export class WiredCalendar extends LitElement {
       }
 
       if (changed.has('value') && this.value) {
-        this.setSelectedDate(this.value.text, false);
+        // this.setSelectedDate(this.value.text, false);
       }
     }
 

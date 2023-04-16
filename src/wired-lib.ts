@@ -137,3 +137,10 @@ export function hachureEllipseFill(cx: number, cy: number, width: number, height
   }
   return hachureFill(vertices, seed);
 }
+
+// Conditionally calls an element define, unlike customElement from lit/decorators
+export const customElement = (tagName: string) => function(constructor: CustomElementConstructor) {
+  if (!window.customElements.get(tagName)) {
+    window.customElements.define(tagName, constructor);
+  }
+};

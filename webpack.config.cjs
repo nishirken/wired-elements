@@ -1,10 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/wired-elements.ts',
   mode: 'development',
   output: {
-    filename: 'index.js',
+    filename: 'wired-elements.js',
     path: path.resolve(__dirname, 'lib'),
   },
   module: {
