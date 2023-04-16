@@ -68,19 +68,19 @@ test.describe('Wired calendar', () => {
 		});
 
 	 	test('Shows month and year in header, if selected', async () => {
-	 		const headerLocator = getLocator(calendarLocator, "header-text");
+	 		const headerLocator = getLocator(calendarLocator, "month-year");
 	 		await expect(headerLocator.textContent()).resolves.toBe('February 2023');
 	 	});
 
 	 	test('Shows prev month on left arrow click', async () => {
-	 		const headerLocator = getLocator(calendarLocator, "header-text");
+	 		const headerLocator = getLocator(calendarLocator, "month-year");
 	 		const arrowLeftLocator = getLocator(calendarLocator, "arrow-left");
 	 		await arrowLeftLocator.click();
 	 		await expect(headerLocator.textContent()).resolves.toBe('January 2023');
 	 	});
 
 	 	test('Shows next month on right arrow click', async () => {
-	 		const headerLocator = getLocator(calendarLocator, "header-text");
+	 		const headerLocator = getLocator(calendarLocator, "month-year");
 	 		const arrowRightLocator = getLocator(calendarLocator, "arrow-right");
 	 		await arrowRightLocator.click();
 	 		await expect(headerLocator.textContent()).resolves.toBe('March 2023');

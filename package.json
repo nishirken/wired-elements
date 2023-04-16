@@ -7,7 +7,7 @@
   "module": "lib/wired-elements.js",
   "types": "lib/wired-elements.d.ts",
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf lib && npx tsc --project tsconfig.json",
     "start": "rm -rf lib && npx rollup -c rollup.config.js && http-server -p 9000",
     "test": "playwright test",
     "install": "npm run build"

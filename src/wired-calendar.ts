@@ -4,11 +4,10 @@ import { css, TemplateResult, html, LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 
 const testIds = {
-  root: 'root',
   day: (cell: CalendarCell) => `day-${cell.value}`,
-  headerText: 'header-text',
-  headerArrowLeft: 'arrow-left',
-  headerArrowRight: 'arrow-right',
+  monthYear: 'month-year',
+  arrowLeft: 'arrow-left',
+  arrowRight: 'arrow-right',
 };
 
 interface AreaSize {
@@ -204,13 +203,12 @@ export class WiredCalendar extends LitElement {
     <table style="width:${this.calendarRefSize.width}px;height:${this.calendarRefSize.height}px;border:${TABLE_PADDING}px solid transparent"
             @mousedown="${this.onItemClick}"
             @touchstart="${this.onItemClick}"
-            data-test-id="${testIds.root}"
             >
       ${ /* 1st header row with calendar title and prev/next controls */ ''}
       <tr class="top-header" style="height:${this.tblHeadHeight}px;">
-        <th id="prevCal" class="pointer" @click="${this.onPrevClick}" data-test-id=${testIds.headerArrowLeft}>&lt;&lt;</th>
-        <th colSpan="5" data-test-id="${testIds.headerText}">${this.monthYear}</th>
-        <th id="nextCal" class="pointer" @click="${this.onNextClick}" data-test-id=${testIds.headerArrowRight}>&gt;&gt;</th>
+        <th id="prevCal" class="pointer" @click="${this.onPrevClick}" data-test-id=${testIds.arrowLeft}>&lt;&lt;</th>
+        <th colSpan="5" data-test-id="${testIds.monthYear}">${this.monthYear}</th>
+        <th id="nextCal" class="pointer" @click="${this.onNextClick}" data-test-id=${testIds.arrowRight}>&gt;&gt;</th>
       </tr>
       ${ /* 2nd header row with the seven weekdays names (short or initials) */ ''}
       <tr class="header" style="height:${this.tblHeadHeight}px;">
