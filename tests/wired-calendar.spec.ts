@@ -15,24 +15,31 @@ test.describe('Wired calendar', () => {
 	test.beforeEach(async ({ page }) => {
 		const date = new Date('2021-01-20T00:00:00Z').valueOf();
 		await page.addInitScript(`{
-      Date = class extends Date {
-        constructor() {
-          super(${date.valueOf()});
-        }
-      }
-      const __DateNowOffset = ${date.valueOf()} - Date.now();
-      const __DateNow = Date.now;
-      Date.now = () => __DateNow() + __DateNowOffset;
-    }`);
-		await page.goto('http://localhost:9000/calendar.html');
+			const __DateNowOffset = ${date.valueOf()} - Date.now();
+      		const __DateNow = Date.now;
+			Date = class extends Date {
+			constructor(...args) {
+				if (args.length === 0) {
+					super(__DateNow() + __DateNowOffset);
+				} else {
+					super(...args);
+				}
+			}
+			}
+			Date.now = () => __DateNow() + __DateNowOffset;
+    	}`);
+		await page.goto('http://localhost:9000/tests/wired-calendar.html');
 		calendarLocator = getLocator(page, "calendar");
 		await calendarLocator.waitFor();
 	});
 
-	test.describe("When the selected property has been passed", () => {
-		test.beforeEach(async ({ page }) => {
+	test.describe("When the value property has been passed", () => {
+		test.beforeEach(async () => {
 			await calendarLocator.evaluate((el: any) => {
-				el.selected = 'Feb 10, 2023';
+				el.value = {
+					text: 'Feb 10, 2023',
+					date: new Date(2023, 1, 10),
+				};
 			});
 		});
 
@@ -80,11 +87,13 @@ test.describe('Wired calendar', () => {
 	 	});
 	});
 
-	test('Shows selected day if selected by click', async ({ page }) => {
-		const daySelector = 'day-Jan 1, 2021';
+	test('Shows selected day if selected by click', async () => {
+		const day = 'Jan 2, 2021';
+		const daySelector = `day-${day}`;
 		const dayLocator = getLocator(calendarLocator, daySelector);
 		await dayLocator.click();
-		const dayText = await getSelectedDayLocator(calendarLocator, daySelector).textContent();
-		expect(dayText?.trim()).toBe('1');
+		const dayText = await getSelectedDayLocator(calendarLocator, day).textContent();
+		console.log(dayText);
+		expect(dayText?.trim()).toBe('2');
 	});
 });

@@ -280,7 +280,7 @@ export class WiredCalendar extends LitElement {
       }
 
       if (changed.has('value') && this.value) {
-        // this.setSelectedDate(this.value.text, false);
+        this.setSelectedDate(this.value.text, false);
       }
     }
 
