@@ -50,7 +50,7 @@ function options(seed: number): ResolvedOptions {
     disableMultiStroke: false,
     disableMultiStrokeFill: false,
     seed
-  };
+  } as any;
 }
 
 function opsToPath(drawing: OpSet, joinPaths: boolean): string {
@@ -119,7 +119,7 @@ export function arc(parent: SVGElement, x: number, y: number, width: number, hei
 
 export function hachureFill(points: Point[], seed: number): SVGElement {
   const hf = new ZigZagFiller(fillHelper);
-  const ops = hf.fillPolygon(points, options(seed));
+  const ops = (hf as any).fillPolygon(points, options(seed));
   return createPathNode(ops, null);
 }
 
@@ -137,3 +137,10 @@ export function hachureEllipseFill(cx: number, cy: number, width: number, height
   }
   return hachureFill(vertices, seed);
 }
+
+// Conditionally calls an element define, unlike customElement from lit/decorators
+export const customElement = (tagName: string) => function(constructor: CustomElementConstructor) {
+  if (!window.customElements.get(tagName)) {
+    window.customElements.define(tagName, constructor);
+  }
+};

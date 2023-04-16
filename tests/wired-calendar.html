@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+
+  <script type="application/javascript" src="../lib/wired-elements.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: 'Gloria Hallelujah', sans-serif;
+      font-size: 24px;
+      font-display: fallback;
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+    }
+
+    .item_wrapper {
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+
+    p {
+      margin: 0 10px;
+    }
+
+    wired-calendar {
+      margin: 10px; 
+    }
+
+    wired-button {
+      margin: 0 10px;
+    }
+
+    .custom {
+      --wired-calendar-bg: yellow;
+      --wired-calendar-color: red;
+      --wired-calendar-selected-color: black;
+      --wired-calendar-dimmed-color: brown;
+      width: 260px;
+      height: 260px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <!-- Minimal working calendar -->
+    <div class="item_wrapper">
+      <p>Minimal</p>
+      <wired-calendar data-test-id="calendar"></wired-calendar>
+    </div>
+  </div>
+  <script>
+    const calendar = document.querySelector('[data-test-id="calendar"]');
+  </script>
+</body>
+
+</html>
