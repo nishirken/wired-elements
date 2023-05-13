@@ -28,6 +28,7 @@ export class WiredButton extends WiredBase {
       BaseCSS,
       css`
         :host {
+          font-family: Lora;
           display: inline-block;
           font-size: 14px;
         }

@@ -49,6 +49,7 @@ export class WiredInput extends WiredBase {
           font-family: sans-serif;
           width: 150px;
           outline: none;
+          font-family: Lora;
         }
         :host([disabled]) {
           opacity: 0.6 !important;

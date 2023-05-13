@@ -17,6 +17,7 @@ export class WiredLink extends WiredBase {
         :host {
           display: inline-block;
           position: relative;
+          font-family: Merriweather;
         }
         a, a:hover, a:visited {
           color: inherit;

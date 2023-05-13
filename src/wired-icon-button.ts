@@ -13,6 +13,7 @@ export class WiredIconButton extends WiredBase {
       BaseCSS,
       css`
         :host {
+          font-family: Merriweather;
           display: inline-block;
           font-size: 14px;
         }

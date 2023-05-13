@@ -98,6 +98,7 @@ export class WiredCalendar extends LitElement {
       position: relative;
       outline: none;
       opacity: 0;
+      font-family: 'Gloria Hallelujah';
     }
 
     :host(.wired-disabled) {

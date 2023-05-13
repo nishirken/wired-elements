@@ -31,6 +31,7 @@ export class WiredTextarea extends WiredBase {
           width: 400px;
           outline: none;
           padding: 4px;
+          font-family: Lora;
         }
         :host([disabled]) {
           opacity: 0.6 !important;
